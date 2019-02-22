@@ -1,0 +1,6 @@
+[package]
+name = "sorteador_de_livros_para_ler"
+version = "0.1.0"
+authors = ["gabriel souza <gabriel.lago@cea.com.br>"]
+
+[dependencies]
