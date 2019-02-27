@@ -4,5 +4,8 @@ version = "0.1.0"
 authors = ["gabriel souza <gabrielsouza849@gmail.com>"]
 
 [dependencies]
-diesel = "1.4.1"
-commander = "0.1"
+diesel = { version = "1.4.1", features = ["sqlite"] }
+commander = "0.1.2"
+dotenv = "0.13.0"
+
+
