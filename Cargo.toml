@@ -8,4 +8,7 @@ diesel = { version = "1.4.1", features = ["sqlite"] }
 commander = "0.1.2"
 dotenv = "0.13.0"
 
+[lib]
+name = "sorteador_de_livros_para_ler"
+path = "./src/operator_in_db/lib.rs"
 
