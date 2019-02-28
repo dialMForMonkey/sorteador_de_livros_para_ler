@@ -1,1 +1,0 @@
-/home/gabriel/Documentos/workspace/sorteador_de_livros_para_ler/target/debug/sorteador_de_livros_para_ler-773d98fed92654ab: /home/gabriel/Documentos/workspace/sorteador_de_livros_para_ler/src/main.rs
