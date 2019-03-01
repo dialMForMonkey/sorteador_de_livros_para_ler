@@ -15,6 +15,15 @@ fn main() {
     
     let results = books.load::<Book>(&conn).expect("Erro Consultar ");
     
+    let length = results.len();
+    println!("tamanho {:?}", length);
+
+
+
+    for item in results {
+     
+        println!("nome do livro {:?}",item.name);
+    }
+     
     
-    println!("Hello, world!");
 }
