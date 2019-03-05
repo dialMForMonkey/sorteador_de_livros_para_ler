@@ -10,5 +10,5 @@ dotenv = "0.13.0"
 
 [lib]
 name = "sorteador_de_livros_para_ler"
-path = "./src/operator_in_db/lib.rs"
+path = "./src/operator_in_db/controller.rs"
 
