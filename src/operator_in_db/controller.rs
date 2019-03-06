@@ -1,3 +1,5 @@
+#[macro_use]
+
 extern crate diesel;
 
 use diesel::prelude::*;
@@ -10,13 +12,19 @@ mod schema;
 use self::schema::books::dsl::*;
 
 pub struct Book {
-    name: String,
-    read: bool
+   pub name: String,
+   pub read: bool
 }
 
 impl Book {
     fn is_read (r: Option<i32>) -> bool {
-        true
+        let result = if let Some(r) = Some(1) {
+            true
+        } else {
+            false
+        };
+        
+        result
     }
 
     pub fn random_books() -> Self {
@@ -27,19 +35,21 @@ impl Book {
         None
     }
 
-    pub fn get_all_books() -> Vec<Self> {
+     pub fn get_all_books()  -> Vec<Self> {
         
         let conn = connection::get_connection();
-        let result = books.load::<models::Book>(&conn)
+        match books.load::<models::Book>(&conn) {
+            Ok(result) => result
+                    .into_iter()
                     .map(|item: models::Book| {
                         Book { 
                             name: item.name, 
-                            read:  item.read.unwrap(),
+                            read: Self::is_read(item.read),
                             }
                     })
-                    ;
-        
-        result
+                    .collect::<Vec<Self>>(),
+            Err(_) => vec![]
+        }
     }
 
     pub fn insert_book(book: Self) -> Option<String>{

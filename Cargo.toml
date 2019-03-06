@@ -5,8 +5,9 @@ authors = ["gabriel souza <gabrielsouza849@gmail.com>"]
 
 [dependencies]
 diesel = { version = "1.4.1", features = ["sqlite"] }
-commander = "0.1.2"
+clap = "2.32.0"
 dotenv = "0.13.0"
+tui = "0.4.0"
 
 [lib]
 name = "sorteador_de_livros_para_ler"

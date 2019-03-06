@@ -1,4 +1,3 @@
-#[macro_use]
 
 extern crate diesel;
 extern crate dotenv;
@@ -6,7 +5,9 @@ extern crate dotenv;
 
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
-use dotenv::dotenv;
+
+use self::dotenv::dotenv;
+
 use std::env;
 
 pub fn get_connection() -> SqliteConnection {
