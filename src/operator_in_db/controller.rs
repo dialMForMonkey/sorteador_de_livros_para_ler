@@ -5,6 +5,7 @@ extern crate diesel;
 use diesel::prelude::*;
 use diesel::insert_into;
 
+use diesel::update;
 
 mod connection;
 mod models;
@@ -13,10 +14,15 @@ mod schema;
 use self::schema::books::dsl::*;
 
 
+pub struct BookView {
+   pub name: String,
+   pub read: bool,
+   pub id: i32,
+}
 
-impl models::BookForm {
-    fn is_read (r: Option<i32>) -> bool {
-        let result = if let Some(r) = Some(1) {
+impl BookView {
+    fn is_read (_r: Option<i32>) -> bool {
+        let result = if let Some(_r) = Some(1) {
             true
         } else {
             false
@@ -25,11 +31,19 @@ impl models::BookForm {
         result
     }
 
-    pub fn random_books() -> Self {
-        models:: {name: String::from("teste"), read:false, id: 1i32}
+    fn convert_view_for_model(_r: bool) -> i32 {
+         if let true = _r {
+                1
+            } else {
+                0
+            }
     }
 
-    pub fn search_book(book: Self) -> Option<Book>{
+    pub fn random_books() -> Self {
+        BookView { name: String::from("teste"), read: false, id: 0 }
+    }
+
+    pub fn search_book(book: Self) -> Option<BookView>{
         None
     }
 
@@ -40,10 +54,10 @@ impl models::BookForm {
             Ok(result) => result
                     .into_iter()
                     .map(|item: models::Book| {
-                        Book { 
+                        BookView { 
                             name: item.name, 
                             read: Self::is_read(item.read),
-                            id: 1i32,
+                            id: item.id.unwrap_or(0)
                             }
                     })
                     .collect::<Vec<Self>>(),
@@ -51,23 +65,35 @@ impl models::BookForm {
         }
     }
 
-    pub fn insert_book(book: Self)  {
+    pub fn insert_book(_book_view: Self) -> usize {
         
-
         let conn = connection::get_connection();
-        // consultar ultima linha
+        let book_model =  models::BookForm {
+            name: _book_view.name,
+            read: Self::convert_view_for_model(_book_view.read),
+        };
+        let list_book = vec![book_model];
 
-        let list_book = vec![book];
-
-        insert_into(books).values(list_book).execute(&conn).unwrap();
-        
-
-
-        
+        insert_into(books)
+            .values(list_book)
+            .execute(&conn)
+            .unwrap_or(0)
     }
 
-    pub fn mark_as_read(book: Self) ->  Option<String> {
-        None
+    pub fn mark_as_read(_book: Self) -> usize {
+        let conn = connection::get_connection();
+
+        update(books.filter(id.eq(_book.id)))
+            .set(
+                read.eq(
+                        match _book.read {
+                            true => 1,
+                            false => 0,
+                        }
+                    )
+            )
+            .execute(&conn)
+            .unwrap_or(0)
     }
 
 }

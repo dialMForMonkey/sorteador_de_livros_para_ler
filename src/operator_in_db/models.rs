@@ -11,6 +11,5 @@ pub struct Book {
 #[table_name = "books"]
 pub struct BookForm {
    pub name: String,
-   pub read: i32,
-   pub id: i32
+   pub read: i32
 }
