@@ -27,7 +27,6 @@ impl BookView {
         } else {
             false
         };
-        
         result
     }
 
@@ -39,28 +38,39 @@ impl BookView {
             }
     }
 
+    fn convert_list_model_for_view(_r: Vec<models::Book>) -> Vec<Self> {
+        _r.into_iter()
+            .map(|item: models::Book| {
+                BookView { 
+                    name: item.name, 
+                    read: Self::is_read(item.read),
+                    id: item.id.unwrap_or(0)
+                    }
+            })
+            .collect::<Vec<Self>>()
+    }
+
     pub fn random_books() -> Self {
         BookView { name: String::from("teste"), read: false, id: 0 }
     }
 
-    pub fn search_book(book: Self) -> Option<BookView>{
-        None
+    pub fn search_book(_book: Self) -> Vec<Self> {
+       let conn = connection::get_connection();
+       let result = books
+        .filter(name.like(_book.name))
+        .load(&conn);
+
+        match result {
+            Ok(result) => Self::convert_list_model_for_view(result),
+            Err(_) => vec![]
+        }
     }
 
      pub fn get_all_books()  -> Vec<Self> {
         
         let conn = connection::get_connection();
         match books.load::<models::Book>(&conn) {
-            Ok(result) => result
-                    .into_iter()
-                    .map(|item: models::Book| {
-                        BookView { 
-                            name: item.name, 
-                            read: Self::is_read(item.read),
-                            id: item.id.unwrap_or(0)
-                            }
-                    })
-                    .collect::<Vec<Self>>(),
+            Ok(result) => Self::convert_list_model_for_view(result),
             Err(_) => vec![]
         }
     }
