@@ -8,6 +8,7 @@ diesel = { version = "1.4.1", features = ["sqlite"] }
 clap = "2.32.0"
 dotenv = "0.13.0"
 tui = "0.4.0"
+rand = "0.6.5"
 
 [lib]
 name = "sorteador_de_livros_para_ler"

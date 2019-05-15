@@ -1,7 +1,9 @@
 #[macro_use]
 
 extern crate diesel;
+extern crate rand;
 
+use rand::prelude::*;
 use diesel::prelude::*;
 use diesel::insert_into;
 
@@ -20,7 +22,7 @@ pub struct BookView {
    pub id: i32,
 }
 
-impl BookView {
+impl BookView  {
     fn is_read (_r: Option<i32>) -> bool {
         let result = if let Some(_r) = Some(1) {
             true
@@ -42,7 +44,7 @@ impl BookView {
         _r.into_iter()
             .map(|item: models::Book| {
                 BookView { 
-                    name: item.name, 
+                    name: item.name,
                     read: Self::is_read(item.read),
                     id: item.id.unwrap_or(0)
                     }
@@ -50,8 +52,13 @@ impl BookView {
             .collect::<Vec<Self>>()
     }
 
-    pub fn random_books() -> Self {
-        BookView { name: String::from("teste"), read: false, id: 0 }
+    pub fn random_books() -> Option<BookView> {
+        let all_books_ready_read =  Self::get_all_books().into_iter().filter(|item| !item.read).collect::<Vec<BookView>>();
+        let mut rng = rand::thread_rng();
+        let length = all_books_ready_read.len();
+        let sort_number = rng.gen_range(0,length);
+
+        all_books_ready_read.into_iter().nth(sort_number)
     }
 
     pub fn search_book(_book: Self) -> Vec<Self> {

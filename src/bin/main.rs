@@ -27,6 +27,19 @@ fn show_list_books() {
     }
 }
 
+fn show_random_book() {
+    match BookView::random_books(){
+        Some(book) => {
+            println!("{} {} {}", book.id, book.name, convert_read_model_view(book.read))
+        },
+        None => {
+            println!("Sem livro para sortear cadastre mais livros")
+        }
+
+    };
+
+}
+
 fn mark_as_read(id: &str) -> bool {
     let book = BookView {
         name: "".to_string(),
@@ -74,7 +87,9 @@ fn show_result(options: clap::ArgMatches) {
             true => println!("livro atualizado com sucesso"),
             false => println!("erro ao  atualizado livro sucesso"),
         }
-
+    }
+    if options.is_present("sorterar_livro_para_ler") {
+        show_random_book()
     }
 }
 
@@ -101,7 +116,14 @@ fn main() {
                             .long("marca_como_lido")
                             .short("m")
                             .value_names(&["id"])
-    ];    
+    ];
+
+    let arg_get_random_book = &[
+                            Arg::with_name("sorterar_livro_para_ler")
+                                .long("sorterar_livro_para_ler")
+                                .help("Sortear livro nao lido")
+                                .short("s")
+    ];
     
     let options = App::new("Sorteador de livros para ler")
                     .version("0.0.1")
@@ -110,6 +132,7 @@ fn main() {
                     .arg(arg_list_books)
                     .args(arg_insert_book)
                     .args(arg_mark_read_in_book)
+                    .args(arg_get_random_book)
                     .get_matches();    
     
     show_result(options);

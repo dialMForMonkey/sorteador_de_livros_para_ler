@@ -13,8 +13,13 @@ use std::env;
 pub fn get_connection() -> SqliteConnection {
     dotenv().ok();
 
-    let string_connection =  env::var("DATABASE_URL")
-        .expect("Erro get DATABASE_URL");
+    let string_connection = match env::var("DATABASE_URL") {
+        Ok(x) => x,
+        Err(err) => {
+            println!("{}", err.to_string());
+           String::from("")
+        }
+    };
 
     SqliteConnection::establish(&string_connection)
         .expect("Erro get connection")
