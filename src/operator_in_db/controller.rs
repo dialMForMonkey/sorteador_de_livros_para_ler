@@ -24,12 +24,16 @@ pub struct BookView {
 
 impl BookView  {
     fn is_read (_r: Option<i32>) -> bool {
-        let result = if let Some(_r) = Some(1) {
-            true
-        } else {
-            false
-        };
-        result
+        match _r {
+            Some(i) => {
+                if i == 1 {
+                    true
+                } else {
+                    false
+                }
+            },
+            None => false
+        }
     }
 
     fn convert_view_for_model(_r: bool) -> i32 {
@@ -55,10 +59,14 @@ impl BookView  {
     pub fn random_books() -> Option<BookView> {
         let all_books_ready_read =  Self::get_all_books().into_iter().filter(|item| !item.read).collect::<Vec<BookView>>();
         let mut rng = rand::thread_rng();
-        let length = all_books_ready_read.len();
-        let sort_number = rng.gen_range(0,length);
+        let max_number = all_books_ready_read.len();
+        if max_number > 0 {
+            let sort_number = rng.gen_range(0,max_number);
 
-        all_books_ready_read.into_iter().nth(sort_number)
+            all_books_ready_read.into_iter().nth(sort_number)
+        } else {
+            None
+        }
     }
 
     pub fn search_book(_book: Self) -> Vec<Self> {
@@ -110,7 +118,10 @@ impl BookView  {
                     )
             )
             .execute(&conn)
-            .unwrap_or(0)
+            .unwrap_or_else(|er|{
+                println!("{:?}",er);
+                0
+            })
     }
 
 }

@@ -5,14 +5,14 @@ extern crate sorteador_de_livros_para_ler;
 use sorteador_de_livros_para_ler::BookView;
 
 use clap::{Arg, App};
-use std::str::FromStr;
+
 fn get_list_book_from_db() -> Vec<BookView> {
     BookView::get_all_books()
 }
 
 
-fn convert_read_model_view (read: bool) -> &'static str{
-    if read {
+fn convert_read_model_view (_read: bool) -> &'static str{
+    if _read {
         "lido"
     } else {
         "nao lido"
@@ -43,8 +43,8 @@ fn show_random_book() {
 fn mark_as_read(id: &str) -> bool {
     let book = BookView {
         name: "".to_string(),
-        read: false,
-        id: i32::from_str(id).unwrap_or(-1)
+        read: true,
+        id: id.parse().unwrap_or(0i32)
     };
 
     match BookView::mark_as_read(book) {
@@ -56,7 +56,7 @@ fn mark_as_read(id: &str) -> bool {
 fn insert_book(name: &str, read: &str) -> bool {
     let book = BookView {
         name: name.to_string(), 
-        read: FromStr::from_str(read).unwrap(),
+        read: read.parse::<bool>().unwrap_or(false),
         id: 0i32
     };
 
@@ -73,7 +73,7 @@ fn show_result(options: clap::ArgMatches) {
     }
     if options.is_present("inserir_livro") {
         let name = options.value_of("inserir_livro").unwrap();
-        let read = options.value_of("lido").unwrap_or("false");
+        let read = "false";
 
         match insert_book(name, read) {
             true => println!("cadastrado livro"),
